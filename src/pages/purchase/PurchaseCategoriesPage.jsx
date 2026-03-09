@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import { listCategories, createCategory, deleteCategory } from "../api/categories";
+import {
+  listPurchaseCategories,
+  createPurchaseCategory,
+  deletePurchaseCategory,
+} from "../../api/purchase";
 
-function CategoriesPage() {
-  const logout = useAuthStore((s) => s.logout);
+function PurchaseCategoriesPage() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newCategory, setNewCategory] = useState({ name: "", color: "#6366f1" });
   const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState("");
 
   const colors = [
     "#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f97316",
@@ -19,7 +20,7 @@ function CategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const data = await listCategories();
+      const data = await listPurchaseCategories();
       setCategories(data);
     } catch (err) {
       console.error(err);
@@ -34,30 +35,25 @@ function CategoriesPage() {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (!newCategory.name.trim()) {
-      setError("El nombre es requerido");
-      return;
-    }
+    if (!newCategory.name.trim()) return;
     setIsCreating(true);
-    setError("");
     try {
-      await createCategory({ name: newCategory.name.trim(), color: newCategory.color });
+      await createPurchaseCategory({ name: newCategory.name.trim(), color: newCategory.color });
       setNewCategory({ name: "", color: "#6366f1" });
       fetchCategories();
     } catch (err) {
-      setError(err.response?.data?.detail || "Error al crear categoría");
+      alert(err.response?.data?.detail || "Error al crear categoría");
     } finally {
       setIsCreating(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("¿Estás seguro de eliminar esta categoría?")) return;
+    if (!confirm("¿Eliminar esta categoría?")) return;
     try {
-      await deleteCategory(id);
+      await deletePurchaseCategory(id);
       fetchCategories();
     } catch (err) {
-      console.error(err);
       alert("No se pudo eliminar la categoría");
     }
   };
@@ -65,34 +61,14 @@ function CategoriesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50">
       <header className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
-        <Link to="/" className="text-lg font-semibold hover:text-indigo-400">Finview</Link>
-        <div className="flex items-center gap-3 text-sm">
-          <Link to="/dashboard" className="text-slate-400 hover:text-white">
-            Dashboard
-          </Link>
-          <Link to="/purchase" className="text-slate-400 hover:text-white">
-            Compras
-          </Link>
-          <Link
-            to="/upload"
-            className="rounded-md bg-indigo-500 px-3 py-1 text-xs font-medium text-white shadow-sm hover:bg-indigo-400"
-          >
-            Subir estado
-          </Link>
-          <button
-            onClick={logout}
-            className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:bg-slate-800"
-          >
-            Cerrar sesión
-          </button>
-        </div>
+        <Link to="/purchase" className="text-lg font-semibold hover:text-indigo-400">← Volver</Link>
       </header>
 
       <main className="mx-auto max-w-3xl px-6 py-8">
         <div className="mb-8">
-          <h2 className="mb-2 text-2xl font-semibold">Categorías</h2>
+          <h1 className="mb-2 text-2xl font-semibold">Categorías de Compras</h1>
           <p className="text-sm text-slate-400">
-            Gestioná las categorías para clasificar tus gastos.
+            Organizá tus productos por categorías.
           </p>
         </div>
 
@@ -127,7 +103,6 @@ function CategoriesPage() {
               {isCreating ? "Agregando..." : "Agregar"}
             </button>
           </div>
-          {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
         </form>
 
         {loading ? (
@@ -175,4 +150,4 @@ function CategoriesPage() {
   );
 }
 
-export default CategoriesPage;
+export default PurchaseCategoriesPage;
