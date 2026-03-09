@@ -8,6 +8,12 @@ import UploadPage from "./pages/UploadPage";
 import ReviewPage from "./pages/ReviewPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import CategoriesPage from "./pages/CategoriesPage";
+import PurchaseDashboardPage from "./pages/purchase/PurchaseDashboardPage";
+import PurchaseCartPage from "./pages/purchase/PurchaseCartPage";
+import PurchaseListsPage from "./pages/purchase/PurchaseListsPage";
+import PurchaseListDetailPage from "./pages/purchase/PurchaseListDetailPage";
+import PurchaseCategoriesPage from "./pages/purchase/PurchaseCategoriesPage";
+import PurchaseStatsPage from "./pages/purchase/PurchaseStatsPage";
 import { useAuthStore } from "./store/authStore";
 import { fetchMe } from "./api/auth";
 
@@ -58,6 +64,30 @@ function App() {
         <Route
           path="/review/:id"
           element={isAuthenticated ? <ReviewPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/purchase"
+          element={isAuthenticated ? <PurchaseDashboardPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/purchase/cart/:id"
+          element={isAuthenticated ? <PurchaseCartPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/purchase/lists"
+          element={isAuthenticated ? <PurchaseListsPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/purchase/lists/:id"
+          element={isAuthenticated ? <PurchaseListDetailPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/purchase/categories"
+          element={isAuthenticated ? <PurchaseCategoriesPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/purchase/stats"
+          element={isAuthenticated ? <PurchaseStatsPage /> : <Navigate to="/login" replace />}
         />
       </Routes>
     </div>

@@ -103,6 +103,12 @@ function DashboardPage() {
             Transacciones
           </Link>
           <Link
+            to="/purchase"
+            className="text-slate-400 hover:text-white"
+          >
+            Compras
+          </Link>
+          <Link
             to="/upload"
             className="rounded-md bg-indigo-500 px-3 py-1 text-xs font-medium text-white shadow-sm hover:bg-indigo-400"
           >
