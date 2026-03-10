@@ -6,21 +6,35 @@ React + Vite + Tailwind CSS frontend for Finview expense tracking app. Communica
 
 ## Relationship with Backend
 
-- **Backend URL**: `http://localhost:8000`
-- **API Base**: `/api/v1` (configured in `.env` and `src/api/client.js`)
+- **API Base**: Configured via `VITE_API_BASE_URL` environment variable
 - **Backend Repo**: Separate repo (`finview-backend`)
 
 ## Commands
 
 ```bash
 # Development
+cp .env.development .env
 npm run dev
-
-# With network exposure (for mobile testing)
-npx vite --host
 
 # Build for production
 npm run build
+```
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_API_BASE_URL` | Backend API URL (e.g., `http://localhost:8000/api/v1`) | Yes |
+
+### Environment Files
+
+- `.env.default` - Template with all variables (committed to repo)
+- `.env.development` - Local development values (gitignored)
+- `.env.production` - Production template with empty values (committed to repo)
+
+**Setup for development:**
+```bash
+cp .env.development .env
 ```
 
 ## Project Structure
