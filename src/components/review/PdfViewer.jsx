@@ -1,5 +1,8 @@
 function PdfViewer({ statementId }) {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!baseUrl) {
+    return <p className="text-red-400">VITE_API_BASE_URL no configurado</p>;
+  }
   const src = `${baseUrl}/statements/${statementId}/pdf`;
 
   return (
