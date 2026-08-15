@@ -181,7 +181,7 @@ function DashboardPage() {
                 Editar categorías
               </Link>
             </div>
-            <div className="h-64">
+            <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -189,9 +189,9 @@ function DashboardPage() {
                     dataKey="total"
                     nameKey="category"
                     cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    cy="45%"
+                    outerRadius={70}
+                    label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
                   >
                     {byCategory.map((entry, index) => (
@@ -201,6 +201,11 @@ function DashboardPage() {
                   <Tooltip
                     contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155" }}
                     formatter={(value) => [formatCurrency(value), "Total"]}
+                  />
+                  <Legend
+                    verticalAlign="bottom"
+                    height={36}
+                    wrapperStyle={{ fontSize: "12px" }}
                   />
                 </PieChart>
               </ResponsiveContainer>
