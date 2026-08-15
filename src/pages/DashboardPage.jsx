@@ -191,8 +191,6 @@ function DashboardPage() {
                     cx="50%"
                     cy="45%"
                     outerRadius={70}
-                    label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                    labelLine={false}
                   >
                     {byCategory.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
