@@ -15,13 +15,13 @@ export const getByCategory = async (period = "all") => {
   return data;
 };
 
-export const getByBank = async () => {
-  const { data } = await api.get("/stats/by-bank");
+export const getByBank = async (period = "all") => {
+  const { data } = await api.get(`/stats/by-bank?period=${period}`);
   return data;
 };
 
-export const getTopMerchants = async (limit = 10) => {
-  const { data } = await api.get(`/stats/top-merchants?limit=${limit}`);
+export const getTopMerchants = async (limit = 10, period = "all") => {
+  const { data } = await api.get(`/stats/top-merchants?limit=${limit}&period=${period}`);
   return data;
 };
 
