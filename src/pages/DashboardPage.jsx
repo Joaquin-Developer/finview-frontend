@@ -83,6 +83,16 @@ function DashboardPage() {
     }).format(value);
   };
 
+  // Keep "Sin categoría" out of the pie chart (it can dwarf every real
+  // category visually) and surface it as a separate callout instead.
+  const categorizedData = byCategory.filter((c) => c.category !== "Sin categoría");
+  const uncategorized = byCategory.find((c) => c.category === "Sin categoría");
+  const totalAllCategories = byCategory.reduce((sum, c) => sum + c.total, 0);
+  const uncategorizedPercent =
+    uncategorized && totalAllCategories > 0
+      ? ((uncategorized.total / totalAllCategories) * 100).toFixed(0)
+      : null;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
@@ -181,20 +191,26 @@ function DashboardPage() {
                 Editar categorías
               </Link>
             </div>
+            {uncategorized && (
+              <p className="mb-2 text-xs text-amber-400">
+                {formatCurrency(uncategorized.total)} sin categorizar ({uncategorizedPercent}%) —{" "}
+                <Link to="/transactions" className="underline hover:text-amber-300">
+                  revisar
+                </Link>
+              </p>
+            )}
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={byCategory}
+                    data={categorizedData}
                     dataKey="total"
                     nameKey="category"
                     cx="50%"
                     cy="45%"
                     outerRadius={70}
-                    label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                    labelLine={false}
                   >
-                    {byCategory.map((entry, index) => (
+                    {categorizedData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
