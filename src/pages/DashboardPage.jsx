@@ -46,24 +46,22 @@ function DashboardPage() {
   const [byCategory, setByCategory] = useState([]);
   const [categoryPeriod, setCategoryPeriod] = useState("latest");
   const [byBank, setByBank] = useState([]);
+  const [bankPeriod, setBankPeriod] = useState("latest");
   const [topMerchants, setTopMerchants] = useState([]);
+  const [merchantPeriod, setMerchantPeriod] = useState("latest");
   const [trends, setTrends] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sum, month, bank, merch, trend] = await Promise.all([
+        const [sum, month, trend] = await Promise.all([
           getSummary(),
           getByMonth(6),
-          getByBank(),
-          getTopMerchants(5),
           getTrends(30),
         ]);
         setSummary(sum);
         setByMonth(month.reverse());
-        setByBank(bank);
-        setTopMerchants(merch);
         setTrends(trend);
       } catch (err) {
         console.error(err);
@@ -85,6 +83,30 @@ function DashboardPage() {
     };
     fetchCategoryData();
   }, [categoryPeriod]);
+
+  useEffect(() => {
+    const fetchBankData = async () => {
+      try {
+        const bank = await getByBank(bankPeriod);
+        setByBank(bank);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchBankData();
+  }, [bankPeriod]);
+
+  useEffect(() => {
+    const fetchMerchantData = async () => {
+      try {
+        const merch = await getTopMerchants(5, merchantPeriod);
+        setTopMerchants(merch);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchMerchantData();
+  }, [merchantPeriod]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("es-UY", {
@@ -264,7 +286,29 @@ function DashboardPage() {
 
         <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
-            <h3 className="mb-4 text-lg font-medium">Gastos por banco</h3>
+            <h3 className="mb-2 text-lg font-medium">Gastos por banco</h3>
+            <div className="mb-4 flex gap-2 text-xs">
+              <button
+                onClick={() => setBankPeriod("latest")}
+                className={`rounded px-2 py-1 ${
+                  bankPeriod === "latest"
+                    ? "bg-indigo-500 text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Último mes
+              </button>
+              <button
+                onClick={() => setBankPeriod("all")}
+                className={`rounded px-2 py-1 ${
+                  bankPeriod === "all"
+                    ? "bg-indigo-500 text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Todo
+              </button>
+            </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={byBank} layout="vertical">
@@ -282,7 +326,29 @@ function DashboardPage() {
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
-            <h3 className="mb-4 text-lg font-medium">Top comerciantes</h3>
+            <h3 className="mb-2 text-lg font-medium">Top comerciantes</h3>
+            <div className="mb-4 flex gap-2 text-xs">
+              <button
+                onClick={() => setMerchantPeriod("latest")}
+                className={`rounded px-2 py-1 ${
+                  merchantPeriod === "latest"
+                    ? "bg-indigo-500 text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Último mes
+              </button>
+              <button
+                onClick={() => setMerchantPeriod("all")}
+                className={`rounded px-2 py-1 ${
+                  merchantPeriod === "all"
+                    ? "bg-indigo-500 text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Todo
+              </button>
+            </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topMerchants}>
