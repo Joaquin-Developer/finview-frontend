@@ -10,8 +10,8 @@ export const getByMonth = async (months = 6) => {
   return data;
 };
 
-export const getByCategory = async () => {
-  const { data } = await api.get("/stats/by-category");
+export const getByCategory = async (period = "all") => {
+  const { data } = await api.get(`/stats/by-category?period=${period}`);
   return data;
 };
 

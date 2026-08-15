@@ -44,6 +44,7 @@ function DashboardPage() {
   const [summary, setSummary] = useState(null);
   const [byMonth, setByMonth] = useState([]);
   const [byCategory, setByCategory] = useState([]);
+  const [categoryPeriod, setCategoryPeriod] = useState("latest");
   const [byBank, setByBank] = useState([]);
   const [topMerchants, setTopMerchants] = useState([]);
   const [trends, setTrends] = useState([]);
@@ -52,17 +53,15 @@ function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sum, month, cat, bank, merch, trend] = await Promise.all([
+        const [sum, month, bank, merch, trend] = await Promise.all([
           getSummary(),
           getByMonth(6),
-          getByCategory(),
           getByBank(),
           getTopMerchants(5),
           getTrends(30),
         ]);
         setSummary(sum);
         setByMonth(month.reverse());
-        setByCategory(cat);
         setByBank(bank);
         setTopMerchants(merch);
         setTrends(trend);
@@ -74,6 +73,18 @@ function DashboardPage() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const cat = await getByCategory(categoryPeriod);
+        setByCategory(cat);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchCategoryData();
+  }, [categoryPeriod]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("es-UY", {
@@ -182,7 +193,7 @@ function DashboardPage() {
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-2 flex items-center justify-between">
               <h3 className="text-lg font-medium">Gastos por categoría</h3>
               <Link
                 to="/categories"
@@ -190,6 +201,28 @@ function DashboardPage() {
               >
                 Editar categorías
               </Link>
+            </div>
+            <div className="mb-4 flex gap-2 text-xs">
+              <button
+                onClick={() => setCategoryPeriod("latest")}
+                className={`rounded px-2 py-1 ${
+                  categoryPeriod === "latest"
+                    ? "bg-indigo-500 text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Último mes
+              </button>
+              <button
+                onClick={() => setCategoryPeriod("all")}
+                className={`rounded px-2 py-1 ${
+                  categoryPeriod === "all"
+                    ? "bg-indigo-500 text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Todo
+              </button>
             </div>
             {uncategorized && (
               <p className="mb-2 text-xs text-amber-400">
