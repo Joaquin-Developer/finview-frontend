@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import { getTransactions } from "../api/stats";
+import { getTransactions, deleteTransaction } from "../api/stats";
 
 function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
@@ -14,6 +14,7 @@ function TransactionsPage() {
     startDate: "",
     endDate: "",
   });
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchTransactions = async (pageNum = 1) => {
     setLoading(true);
@@ -43,6 +44,20 @@ function TransactionsPage() {
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Borrar esta transacción? No se puede deshacer.")) return;
+    setDeletingId(id);
+    try {
+      await deleteTransaction(id);
+      await fetchTransactions(page);
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo borrar la transacción.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const exportCSV = () => {
@@ -135,18 +150,19 @@ function TransactionsPage() {
                   <th className="px-4 py-3 font-medium text-right">Monto</th>
                   <th className="px-4 py-3 font-medium">Moneda</th>
                   <th className="px-4 py-3 font-medium">Categoría</th>
+                  <th className="px-4 py-3" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
+                    <td colSpan={7} className="px-4 py-8 text-center text-slate-400">
                       Cargando...
                     </td>
                   </tr>
                 ) : transactions.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
+                    <td colSpan={7} className="px-4 py-8 text-center text-slate-400">
                       No hay transacciones
                     </td>
                   </tr>
@@ -171,6 +187,15 @@ function TransactionsPage() {
                         <span className="rounded-full bg-slate-800 px-2 py-1 text-xs">
                           {t.category_name || "Sin categoría"}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => handleDelete(t.id)}
+                          disabled={deletingId === t.id}
+                          className="text-xs text-red-400 hover:text-red-300 disabled:opacity-50"
+                        >
+                          {deletingId === t.id ? "..." : "✕"}
+                        </button>
                       </td>
                     </tr>
                   ))
