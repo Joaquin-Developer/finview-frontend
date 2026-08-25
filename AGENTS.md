@@ -69,9 +69,8 @@ UI layer for the purchase module. Corresponds to backend's `purchase_` endpoints
 
 | Page | Route | Description |
 |------|-------|-------------|
-| Dashboard | `/purchase` | Overview with quick actions |
-| Cart | `/purchase/cart/:id` | Active/completed cart details |
-| Cart History | `/purchase/history` | List of completed carts |
+| Dashboard | `/purchase` | Overview with quick actions, and a "Historial de Carritos" section listing completed carts (each links to its detail) |
+| Cart | `/purchase/cart/:id` | Cart details — editable while active; read-only once completed |
 | Lists | `/purchase/lists` | All shopping lists |
 | List Detail | `/purchase/lists/:id` | Items in a list |
 | Categories | `/purchase/categories` | Manage categories |
